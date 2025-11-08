@@ -11,7 +11,7 @@ A full-stack MERN application with AI integration for analyzing medical reports.
 - **AI Chatbot**: Interactive chatbot to ask questions about your health reports
 - **Dashboard**: View report history and health trends
 - **PDF Export**: Download AI summaries as PDF
-- **Dockerized**: Complete Docker setup for easy deployment
+- **Easy Setup**: Simple local development setup
 
 ## 🛠️ Tech Stack
 
@@ -36,57 +36,15 @@ A full-stack MERN application with AI integration for analyzing medical reports.
 - pdf-parse (PDF text extraction)
 
 ### Deployment
-- Docker & Docker Compose
 - GitHub Actions CI/CD
 
 ## 📋 Prerequisites
 
 - Node.js 18+ and npm
-- Docker and Docker Compose
+- MongoDB (running locally or remotely)
 - OpenAI API Key (get one from [OpenAI](https://platform.openai.com/))
-- MongoDB (or use Docker)
 
 ## 🚀 Quick Start
-
-### Option 1: Docker (Recommended)
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd MedScan
-   ```
-
-2. **Create environment file**
-   ```bash
-   cp server/.env.example server/.env
-   ```
-
-3. **Edit `server/.env` with your credentials**
-   ```env
-   MONGO_URI=mongodb://mongo:27017/mediscan
-   JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-   OPENAI_API_KEY=your_openai_api_key_here
-   PORT=5000
-   NODE_ENV=production
-   ```
-
-4. **Create `.env` file in root directory for Docker Compose**
-   ```bash
-   echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
-   echo "JWT_SECRET=your_super_secret_jwt_key_change_this_in_production" >> .env
-   ```
-
-5. **Build and start all services**
-   ```bash
-   docker-compose up --build
-   ```
-
-6. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:5000
-   - MongoDB: localhost:27017
-
-### Option 2: Local Development
 
 #### Backend Setup
 
@@ -113,10 +71,11 @@ A full-stack MERN application with AI integration for analyzing medical reports.
    NODE_ENV=development
    ```
 
-4. **Start MongoDB** (if not using Docker)
+4. **Start MongoDB**
    ```bash
-   # Using Docker
-   docker run -d -p 27017:27017 --name mongodb mongo:latest
+   # Make sure MongoDB is running on your system
+   # Default connection: mongodb://localhost:27017
+   # Or use MongoDB Atlas (cloud): Update MONGO_URI in .env
    ```
 
 5. **Build and run server**
@@ -165,8 +124,7 @@ MediScanAI/
 │   │   ├── lib/           # Utilities
 │   │   └── App.tsx        # Main app component
 │   ├── package.json
-│   ├── vite.config.ts
-│   └── Dockerfile.client
+│   └── vite.config.ts
 │
 ├── server/                # Node.js Backend
 │   ├── src/
@@ -177,10 +135,8 @@ MediScanAI/
 │   │   ├── utils/         # AI service, text extraction
 │   │   └── server.ts      # Express server
 │   ├── package.json
-│   ├── tsconfig.json
-│   └── Dockerfile.server
+│   └── tsconfig.json
 │
-├── docker-compose.yml     # Docker Compose configuration
 ├── .github/workflows/     # CI/CD workflows
 └── README.md
 ```
@@ -226,38 +182,15 @@ Edit `server/src/utils/aiService.ts` to:
 - Modify prompts
 - Switch to HuggingFace API (if needed)
 
-## 🐳 Docker Commands
-
-```bash
-# Build and start all services
-docker-compose up --build
-
-# Start services in background
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-
-# Stop and remove volumes
-docker-compose down -v
-
-# Rebuild specific service
-docker-compose build backend
-docker-compose up -d backend
-```
-
 ## 🔧 Environment Variables
 
 ### Backend (`server/.env`)
 ```env
-MONGO_URI=mongodb://mongo:27017/mediscan
+MONGO_URI=mongodb://localhost:27017/mediscan
 JWT_SECRET=your_secret_key
 OPENAI_API_KEY=your_openai_key
 PORT=5000
-NODE_ENV=production
+NODE_ENV=development
 ```
 
 ### Frontend (`client/.env`)
@@ -303,27 +236,33 @@ npm test
 ### Production Deployment
 
 1. **Update environment variables** for production
-2. **Build Docker images**
+2. **Build the applications**
    ```bash
-   docker-compose -f docker-compose.prod.yml build
+   # Backend
+   cd server
+   npm run build
+   
+   # Frontend
+   cd client
+   npm run build
    ```
-3. **Deploy to cloud** (AWS, GCP, Azure, etc.)
+3. **Deploy to cloud** (AWS, GCP, Azure, Heroku, etc.)
 4. **Set up reverse proxy** (Nginx) for frontend
 5. **Configure SSL certificates**
 
 ### CI/CD
 
-GitHub Actions workflow automatically:
-- Builds Docker images on push to main
-- Runs health checks
-- Can be extended to deploy to cloud
+GitHub Actions workflow can be configured to:
+- Run tests on push to main
+- Build applications
+- Deploy to cloud services
 
 ## 🐛 Troubleshooting
 
 ### MongoDB Connection Issues
-- Ensure MongoDB is running: `docker ps`
-- Check `MONGO_URI` in `.env`
-- Verify network connectivity in Docker
+- Ensure MongoDB is running locally or check connection string
+- Check `MONGO_URI` in `.env` (should be `mongodb://localhost:27017/mediscan` for local)
+- Verify MongoDB service is running: `mongosh` or check MongoDB Compass
 
 ### OpenAI API Errors
 - Verify `OPENAI_API_KEY` is correct

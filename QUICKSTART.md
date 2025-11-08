@@ -3,7 +3,8 @@
 ## 🚀 Fastest Way to Get Started
 
 ### Prerequisites
-- Docker and Docker Compose installed
+- Node.js 18+ and npm installed
+- MongoDB running locally (or MongoDB Atlas connection string)
 - OpenAI API Key
 
 ### Steps
@@ -13,31 +14,55 @@
    cd MedScan
    ```
 
-2. **Create environment file**
+2. **Install dependencies**
    ```bash
-   # Create .env in root directory
-   echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
-   echo "JWT_SECRET=your_super_secret_jwt_key_change_this" >> .env
+   # Install backend dependencies
+   cd server
+   npm install
    
-   # Create server/.env
-   echo "MONGO_URI=mongodb://mongo:27017/mediscan" > server/.env
-   echo "JWT_SECRET=your_super_secret_jwt_key_change_this" >> server/.env
-   echo "OPENAI_API_KEY=your_openai_api_key_here" >> server/.env
-   echo "PORT=5000" >> server/.env
-   echo "NODE_ENV=production" >> server/.env
+   # Install frontend dependencies
+   cd ../client
+   npm install
    ```
 
-3. **Start all services**
+3. **Create environment file**
    ```bash
-   docker-compose up --build
+   # Create server/.env
+   cd ../server
+   cp .env.example .env
+   # Edit .env with your credentials:
+   # MONGO_URI=mongodb://localhost:27017/mediscan
+   # JWT_SECRET=your_super_secret_jwt_key_change_this
+   # OPENAI_API_KEY=your_openai_api_key_here
+   # PORT=5000
+   # NODE_ENV=development
    ```
 
-4. **Access the application**
+4. **Start MongoDB** (if not already running)
+   ```bash
+   # Make sure MongoDB is running on your system
+   # Or use MongoDB Atlas and update MONGO_URI in .env
+   ```
+
+5. **Start backend server**
+   ```bash
+   cd server
+   npm run dev
+   # Server will run on http://localhost:5000
+   ```
+
+6. **Start frontend** (in a new terminal)
+   ```bash
+   cd client
+   npm run dev
+   # Frontend will run on http://localhost:5173
+   ```
+
+7. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:5000/api/health
-   - MongoDB: localhost:27017
 
-5. **Register a user**
+8. **Register a user**
    - Go to http://localhost:5173/register
    - Create an account (Patient or Doctor role)
    - Login and start uploading reports!
@@ -71,28 +96,34 @@
 
 ### MongoDB Connection Error
 ```bash
-# Check if MongoDB container is running
-docker ps
+# Check if MongoDB is running
+# Windows: Check Services or Task Manager
+# Linux/Mac: sudo systemctl status mongod
 
-# Restart MongoDB
-docker-compose restart mongo
+# Or connect to MongoDB Atlas
+# Update MONGO_URI in server/.env with your Atlas connection string
 ```
 
 ### OpenAI API Error
-- Verify your API key in `.env` files
+- Verify your API key in `server/.env`
 - Check API quota at https://platform.openai.com/
 
 ### Port Already in Use
 ```bash
-# Change ports in docker-compose.yml
+# Change PORT in server/.env
 # Or stop conflicting services
 ```
 
 ### Build Errors
 ```bash
-# Clean and rebuild
-docker-compose down -v
-docker-compose up --build
+# Clean and reinstall
+cd server
+rm -rf node_modules package-lock.json
+npm install
+
+cd ../client
+rm -rf node_modules package-lock.json
+npm install
 ```
 
 ## 📚 Next Steps
@@ -100,5 +131,3 @@ docker-compose up --build
 - Read full README.md for detailed documentation
 - Customize AI prompts in `server/src/utils/aiService.ts`
 - Add more features as needed
-
-

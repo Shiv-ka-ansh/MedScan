@@ -13,7 +13,6 @@ A full-stack MERN application with AI integration has been successfully created.
 - ✅ **Middleware**: JWT authentication, role-based authorization, file upload
 - ✅ **Utils**: AI service (OpenAI integration), text extraction (PDF/OCR/Text)
 - ✅ **Server**: Express server with MongoDB connection, error handling
-- ✅ **Docker**: Dockerfile.server for containerization
 
 ### Frontend (React + Vite + Tailwind)
 - ✅ **Pages**: Home, Login, Register, Dashboard, Upload, ReportDetail, Chat, DoctorPanel
@@ -21,10 +20,8 @@ A full-stack MERN application with AI integration has been successfully created.
 - ✅ **Context**: AuthContext for global state management
 - ✅ **Services**: API client, Auth, Report, Chat services
 - ✅ **Routing**: React Router with protected routes
-- ✅ **Docker**: Dockerfile.client for containerization
 
 ### Infrastructure
-- ✅ **Docker Compose**: Complete multi-container setup (MongoDB, Backend, Frontend)
 - ✅ **CI/CD**: GitHub Actions workflow for automated testing
 - ✅ **Documentation**: README.md, QUICKSTART.md with setup instructions
 - ✅ **Configuration**: TypeScript configs, Tailwind config, Vite config
@@ -65,16 +62,29 @@ A full-stack MERN application with AI integration has been successfully created.
 
 ## 🚀 Getting Started
 
-### Quick Start (Docker)
+### Quick Start
 ```bash
-# 1. Create environment files
-# Create .env in root with OPENAI_API_KEY and JWT_SECRET
-# Create server/.env with all required variables
+# 1. Install dependencies
+cd server && npm install
+cd ../client && npm install
 
-# 2. Start all services
-docker-compose up --build
+# 2. Create environment file
+cd ../server
+cp .env.example .env
+# Edit .env with your credentials
 
-# 3. Access application
+# 3. Start MongoDB (if not running)
+# Make sure MongoDB is running locally
+
+# 4. Start backend
+cd server
+npm run dev
+
+# 5. Start frontend (in new terminal)
+cd client
+npm run dev
+
+# 6. Access application
 # Frontend: http://localhost:5173
 # Backend: http://localhost:5000
 ```
@@ -92,8 +102,8 @@ MediScanAI/
 │   │   ├── context/          # Auth context
 │   │   ├── services/         # 4 API services
 │   │   └── lib/              # Utilities
-│   ├── Dockerfile.client
-│   └── package.json
+│   ├── package.json
+│   └── vite.config.ts
 │
 ├── server/                    # Node.js Backend
 │   ├── src/
@@ -103,10 +113,9 @@ MediScanAI/
 │   │   ├── middleware/       # Auth, upload middleware
 │   │   ├── utils/            # AI service, text extraction
 │   │   └── server.ts         # Express server
-│   ├── Dockerfile.server
-│   └── package.json
+│   ├── package.json
+│   └── tsconfig.json
 │
-├── docker-compose.yml         # Multi-container setup
 ├── .github/workflows/         # CI/CD pipeline
 ├── README.md                  # Full documentation
 ├── QUICKSTART.md             # Quick start guide
@@ -117,19 +126,18 @@ MediScanAI/
 
 ### Environment Variables
 
-**Root `.env`** (for Docker Compose):
+**Root `.env`** (optional, not required):
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-JWT_SECRET=your_super_secret_jwt_key
+# Not needed for local development
 ```
 
 **`server/.env`**:
 ```env
-MONGO_URI=mongodb://mongo:27017/mediscan
+MONGO_URI=mongodb://localhost:27017/mediscan
 JWT_SECRET=your_super_secret_jwt_key
 OPENAI_API_KEY=your_openai_api_key_here
 PORT=5000
-NODE_ENV=production
+NODE_ENV=development
 ```
 
 **`client/.env`** (optional):
@@ -150,7 +158,7 @@ VITE_API_URL=http://localhost:5000/api
 
 1. **Set up environment variables** (see above)
 2. **Get OpenAI API key** from https://platform.openai.com/
-3. **Start Docker containers**: `docker-compose up --build`
+3. **Start the application**: Follow instructions in QUICKSTART.md
 4. **Test the application** end-to-end
 5. **Customize AI prompts** in `server/src/utils/aiService.ts`
 6. **Deploy to production** (AWS, GCP, Azure, etc.)
@@ -161,7 +169,7 @@ VITE_API_URL=http://localhost:5000/api
 - **AI API Costs**: Monitor OpenAI API usage and costs
 - **File Storage**: Uploads are stored locally; consider cloud storage for production
 - **Security**: Change JWT_SECRET in production
-- **MongoDB**: Ensure MongoDB is accessible in Docker network
+- **MongoDB**: Ensure MongoDB is running locally or use MongoDB Atlas connection string
 
 ## 📚 Documentation
 
@@ -178,7 +186,6 @@ VITE_API_URL=http://localhost:5000/api
 - ✅ AI-powered medical analysis
 - ✅ Interactive chatbot
 - ✅ PDF generation and download
-- ✅ Docker containerization
 - ✅ CI/CD pipeline ready
 
 ## 🎉 Ready to Deploy!

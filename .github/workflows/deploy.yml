@@ -1,4 +1,4 @@
-name: Deploy MediScan AI
+name: Build and Test MediScan AI
 
 on:
   push:
@@ -10,31 +10,57 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
 
-      - name: Build Docker images
+      - name: Install backend dependencies
         run: |
-          docker-compose build
+          cd server
+          npm ci
 
-      - name: Start services
+      - name: Install frontend dependencies
         run: |
-          docker-compose up -d
+          cd client
+          npm ci
 
-      - name: Wait for services to be ready
+      - name: Build backend
         run: |
-          sleep 30
-          docker-compose ps
+          cd server
+          npm run build
+        env:
+          MONGO_URI: mongodb://localhost:27017/mediscan
+          JWT_SECRET: test_secret
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'test_key' }}
+
+      - name: Build frontend
+        run: |
+          cd client
+          npm run build
 
       - name: Check backend health
         run: |
+          cd server
+          npm start &
+          sleep 10
           curl -f http://localhost:5000/api/health || exit 1
-
-      - name: Cleanup
-        if: always()
-        run: |
-          docker-compose down -v
